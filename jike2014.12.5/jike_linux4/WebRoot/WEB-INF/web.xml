@@ -1,0 +1,1516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+   <!--<session-config>
+   	<session-timeout>30</session-timeout>
+   </session-config>
+   -->
+   <listener>
+  	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <listener>
+	<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+</listener>
+  <listener>
+  	<listener-class>jk.o1office.ht.listener.SessionListener</listener-class>
+  </listener>
+  <listener>
+  	<listener-class>jk.o1office.ht.listener.ContextListener</listener-class>
+  </listener>
+  
+   <context-param>
+  	<param-name>contextConfigLocation</param-name> 
+   	<param-value>classpath:beans.xml</param-value>
+   </context-param>
+   
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <!-- app接口过滤器 -->
+  <filter>
+  	<filter-name>onlineFilter</filter-name>
+  	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  	<init-param>
+    	<param-name>targetFilterLifecycle</param-name> 
+        <param-value>true</param-value> 
+  	</init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>onlineFilter</filter-name>
+  	
+	<!-- 资料管理 -->
+  	<servlet-name>OrdUserChangePsw</servlet-name>			<!-- 用户修改密码 -->
+  	<servlet-name>UserLogout</servlet-name>					<!-- 用户注销 -->
+  	<servlet-name>UpdatePhoneNumber</servlet-name>			<!-- 用户修改手机号码 -->
+  	<servlet-name>UpdateNickName</servlet-name>				<!-- 用户修改手机昵称 -->
+  	<!-- 配送地址管理 -->
+  	<servlet-name>AddDeliveryAddress</servlet-name>			<!-- 添加用户配送地址 -->
+  	<servlet-name>DefaultDeliveryAddress</servlet-name>		<!-- 设置用户的默认配送地址 -->
+  	<servlet-name>DeleteDeliveryAddress</servlet-name>		<!-- 删除用户的配送地址 -->
+  	<servlet-name>DeliveryAddressList</servlet-name>		<!-- 查询用户的配送地址 -->
+  	<servlet-name>UpdateDeliveryAddress</servlet-name>		<!-- 更新用户的配送地址 -->
+  	<!-- 商品管理 -->
+	<servlet-name>RecommendList</servlet-name>				<!-- 搜索框显示商品列表（销量最高或购买记录） -->
+  
+  	<!-- 订单管理 -->
+  	<servlet-name>CancelOrder</servlet-name>
+  	<servlet-name>DeleteOrder</servlet-name>
+  	<servlet-name>QueryHistoryOrder</servlet-name>
+  	<servlet-name>QueryOrderByID</servlet-name>
+  	<servlet-name>SubmitOrder</servlet-name>
+  	<servlet-name>CheckHOrder</servlet-name>
+  	<!-- 建议管理 
+  	<servlet-name>AddAdviceInfo</servlet-name>-->
+  	<!-- 地区管理 -->
+  	
+  	<!-- 配送端过滤 -->
+  	<servlet-name>CourierTradeCompleted</servlet-name>
+ 	<servlet-name>CourierTradeFailure</servlet-name>
+  	<servlet-name>CourierCancelBill</servlet-name>
+  	<servlet-name>CourierBillCompleted</servlet-name>
+  	<servlet-name>Logout</servlet-name>
+  	<servlet-name>DeliveryUpdatePhoneNumber</servlet-name>
+  	<servlet-name>DeliveryUserChangePsw</servlet-name>
+  	<servlet-name>TodayData</servlet-name>
+  	<servlet-name>UnFinishedOrder</servlet-name>
+  	<servlet-name>QueryReceBillList</servlet-name>
+  	<servlet-name>QueryReceBillDec</servlet-name>
+  	<servlet-name>QueryBillList</servlet-name>
+  	<servlet-name>QueryBillDec</servlet-name>
+  </filter-mapping>
+  
+  
+  <!-- 后台过滤器 -->
+   <!-- 过滤器，验证用户是否登陆 -->
+  <filter>
+  	<filter-name>OnlineFilter</filter-name>
+  	<filter-class>jk.o1office.ht.filter.OnlineFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>OnlineFilter</filter-name>
+  	<url-pattern>/common/*</url-pattern>
+  	<url-pattern>/operate/*</url-pattern>
+  	<url-pattern>/super/*</url-pattern>
+  </filter-mapping>
+   <!-- 过滤器，截取用户访问的地址 -->
+  <filter>
+  	<filter-name>URLFilter</filter-name>
+  	<filter-class>jk.o1office.ht.filter.URLFilter</filter-class>
+  </filter>
+  <filter-mapping>
+  	<filter-name>URLFilter</filter-name>
+  	<url-pattern>/common/*</url-pattern>
+  	<url-pattern>/operate/*</url-pattern>
+  	<url-pattern>/super/*</url-pattern>
+  </filter-mapping>
+  
+  
+  <!-- 广告 -->
+  <servlet>
+		<servlet-name>Advertisement</servlet-name>
+		<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+		<init-param>
+			<param-name>targetBean</param-name>
+			<param-value>advertisement</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Advertisement</servlet-name>
+		<url-pattern>/advertisement</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 用户端初始化 -->
+	<servlet>
+		<servlet-name>Initialize</servlet-name>
+		<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+		<init-param>
+			<param-name>targetBean</param-name>
+			<param-value>initialize</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Initialize</servlet-name>
+		<url-pattern>/initialize</url-pattern>
+	</servlet-mapping>
+  	<!-- 注册管理 -->
+  	<!-- 上传设备信息 -->
+	<servlet>
+		<servlet-name>SubmitDeviceInfo</servlet-name>
+		<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+		<init-param>
+			<param-name>targetBean</param-name>
+			<param-value>submitDeviceInfo</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SubmitDeviceInfo</servlet-name>
+		<url-pattern>/submitDeviceInfo</url-pattern>
+	</servlet-mapping>
+	<!-- 获取手机验证码 -->
+	<servlet>
+    <servlet-name>GetVerificationCode</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getVerificationCode</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetVerificationCode</servlet-name>
+    <url-pattern>/getVerificationCode</url-pattern>
+  </servlet-mapping>
+  <!-- 验证验证码 -->
+  <servlet>
+    <servlet-name>CheckVerificationCode</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>checkVerificationCode</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CheckVerificationCode</servlet-name>
+    <url-pattern>/checkVerificationCode</url-pattern>
+  </servlet-mapping>
+  <!-- 普通用户初始化信息 -->
+  <servlet>
+    <servlet-name>OrdInitializationSoft</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>ordInitializationSoft</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OrdInitializationSoft</servlet-name>
+    <url-pattern>/ordInitializationSoft</url-pattern>
+  </servlet-mapping>
+	<!-- 提交普通用户注册信息 -->
+	<servlet>
+		<servlet-name>OrdUserRegistration</servlet-name>
+		<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+		<init-param>
+			<param-name>targetBean</param-name>
+			<param-value>ordUserRegistration</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OrdUserRegistration</servlet-name>
+		<url-pattern>/ordUserRegistration</url-pattern>
+	</servlet-mapping>
+	
+	
+	<!-- 登陆管理 -->
+  <!-- 普通用户登陆 -->
+  <servlet>
+  	<servlet-name>OrdUserLogin</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+  	<init-param>
+  		<param-name>targetBean</param-name>
+  		<param-value>ordUserLogin</param-value>
+  	</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>OrdUserLogin</servlet-name>
+  	<url-pattern>/ordUserLogin</url-pattern>
+  </servlet-mapping>
+  	<!-- 用户注销 -->
+	<servlet>
+  	<servlet-name>UserLogout</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+  	<init-param>
+  		<param-name>targetBean</param-name>
+  		<param-value>userLogout</param-value>
+  	</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>UserLogout</servlet-name>
+  	<url-pattern>/userLogout</url-pattern>
+  </servlet-mapping>
+	
+	
+	<!-- 资料管理 -->
+  <!-- 普通用户修改密码 -->
+   <servlet>
+    <servlet-name>OrdUserChangePsw</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>ordUserChangePsw</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OrdUserChangePsw</servlet-name>
+    <url-pattern>/ordUserChangePsw</url-pattern>
+  </servlet-mapping>
+  <!-- 忘记密码 -->
+  <servlet>
+    <servlet-name>OrdForgotPsw</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>ordForgotPsw</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OrdForgotPsw</servlet-name>
+    <url-pattern>/ordForgotPsw</url-pattern>
+  </servlet-mapping>
+  <!-- 修改手机号码 -->
+  <servlet>
+    <servlet-name>UpdatePhoneNumber</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>updatePhoneNumber</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdatePhoneNumber</servlet-name>
+    <url-pattern>/updatePhoneNumber</url-pattern>
+  </servlet-mapping>
+   <!-- 修改用户昵称 -->
+  <servlet>
+    <servlet-name>UpdateNickName</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>updateNickName</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateNickName</servlet-name>
+    <url-pattern>/updateNickName</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 配送地址管理 -->
+  <!-- 查看收货地址列表 -->
+   <servlet>
+    <servlet-name>DeliveryAddressList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deliveryAddressList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeliveryAddressList</servlet-name>
+    <url-pattern>/deliveryAddressList</url-pattern>
+  </servlet-mapping>
+  <!-- 新增收货地址 -->
+  <servlet>
+    <servlet-name>AddDeliveryAddress</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addDeliveryAddress</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddDeliveryAddress</servlet-name>
+    <url-pattern>/addDeliveryAddress</url-pattern>
+  </servlet-mapping>
+  <!-- 修改收货地址 -->
+   <servlet>
+    <servlet-name>UpdateDeliveryAddress</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>updateDeliveryAddress</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UpdateDeliveryAddress</servlet-name>
+    <url-pattern>/updateDeliveryAddress</url-pattern>
+  </servlet-mapping>
+  <!-- 删除收货地址 -->
+ <servlet>
+    <servlet-name>DeleteDeliveryAddress</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deleteDeliveryAddress</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteDeliveryAddress</servlet-name>
+    <url-pattern>/deleteDeliveryAddress</url-pattern>
+  </servlet-mapping>
+  <!-- 设置默认收货地址 -->
+  <servlet>
+    <servlet-name>DefaultDeliveryAddress</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>defaultDeliveryAddress</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DefaultDeliveryAddress</servlet-name>
+    <url-pattern>/defaultDeliveryAddress</url-pattern>
+  </servlet-mapping>
+  
+    <servlet>
+    <servlet-name>IOSDeliveryAddressList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>IOSDeliveryAddressList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>IOSDeliveryAddressList</servlet-name>
+    <url-pattern>/IOSDeliveryAddressList</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 查看默认地址 -->
+   <servlet>
+    <servlet-name>QueryDefaultAddress</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryDefaultAddress</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryDefaultAddress</servlet-name>
+    <url-pattern>/queryDefaultAddress</url-pattern>
+  </servlet-mapping>
+  <!-- 商品管理 -->
+ <!-- 下载商品分类列表 -->
+ <servlet>
+    <servlet-name>DownloadCategories</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>downloadCategories</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadCategories</servlet-name>
+    <url-pattern>/downloadCategories</url-pattern>
+  </servlet-mapping>
+ <!-- 根据分类查询商品类表 -->
+ <servlet>
+    <servlet-name>QueryProductList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryProductList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryProductList</servlet-name>
+    <url-pattern>/queryProductList</url-pattern>
+  </servlet-mapping>
+  <!-- 您的关键字 -->
+   <servlet>
+    <servlet-name>GetKeyList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getKeyList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetKeyList</servlet-name>
+    <url-pattern>/getKeyList</url-pattern>
+  </servlet-mapping>
+ <!-- 搜索商品 -->
+ <servlet>
+    <servlet-name>SearchProduct</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>searchProduct</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SearchProduct</servlet-name>
+    <url-pattern>/searchProduct</url-pattern>
+  </servlet-mapping>
+  <!-- 搜索框显示商品列表（销量最高或购买记录） -->
+  <servlet>
+    <servlet-name>RecommendList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>recommendList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>RecommendList</servlet-name>
+    <url-pattern>/recommendList</url-pattern>
+  </servlet-mapping>
+  <!-- 根据商品条形码查询商品信息 -->
+  <servlet>
+    <servlet-name>SearchProductForBarcode</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>searchProductForBarcode</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SearchProductForBarcode</servlet-name>
+    <url-pattern>/searchProductForBarcode</url-pattern>
+  </servlet-mapping>
+ <!-- 根据商品ID查询商品信息 -->
+ <servlet>
+    <servlet-name>GetProductByID</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getProductByID</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetProductByID</servlet-name>
+    <url-pattern>/getProductByID</url-pattern>
+  </servlet-mapping>
+ 
+ <!-- 订单管理 -->
+ <!-- 提交订单 -->
+ <servlet>
+    <servlet-name>SubmitOrder</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>submitOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SubmitOrder</servlet-name>
+    <url-pattern>/submitOrder</url-pattern>
+  </servlet-mapping>
+ <!-- 查询历史订单 -->
+ <servlet>
+    <servlet-name>QueryHistoryOrder</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryHistoryOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryHistoryOrder</servlet-name>
+    <url-pattern>/queryHistoryOrder</url-pattern>
+  </servlet-mapping>
+ <!-- 根据订单id查询订单详情 -->
+  <servlet>
+    <servlet-name>QueryOrderByID</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryOrderByID</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryOrderByID</servlet-name>
+    <url-pattern>/queryOrderByID</url-pattern>
+  </servlet-mapping>
+ <!-- 取消订单 -->
+  <servlet>
+    <servlet-name>CancelOrder</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>cancelOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CancelOrder</servlet-name>
+    <url-pattern>/cancelOrder</url-pattern>
+  </servlet-mapping>
+ <!-- 删除订单 -->
+   <servlet>
+    <servlet-name>DeleteOrder</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deleteOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteOrder</servlet-name>
+    <url-pattern>/deleteOrder</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 投诉建议管理 -->
+  <!-- 新增投诉建议 -->
+     <servlet>
+    <servlet-name>AddAdviceInfo</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addAdviceInfo</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddAdviceInfo</servlet-name>
+    <url-pattern>/addAdviceInfo</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 地区管理 -->
+  <!-- 获取地区列表 -->
+    <servlet>
+    <servlet-name>QueryArea</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryArea</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryArea</servlet-name>
+    <url-pattern>/queryArea</url-pattern>
+  </servlet-mapping>
+  <!-- 获取小区列表 -->
+  <servlet>
+    <servlet-name>QueryCommunity</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryCommunity</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryCommunity</servlet-name>
+    <url-pattern>/queryCommunity</url-pattern>
+  </servlet-mapping>
+  
+  
+ 
+ 
+  <!-- 获取商品列表 --> 
+    <servlet>
+    <servlet-name>QueryShopList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryShopList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryShopList</servlet-name>
+    <url-pattern>/queryShopList</url-pattern>
+   </servlet-mapping>
+  <!-- 提交订单时检查价格 -->
+   <servlet>
+    <servlet-name>CheckHOrder</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>checkHOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CheckHOrder</servlet-name>
+    <url-pattern>/checkHOrder</url-pattern>
+   </servlet-mapping>
+  
+  <!-- test -->
+
+  
+  
+  
+  <!-- 后台servlet -->
+  <!-- 管理员登陆 -->
+   <servlet>
+    <servlet-name>AdminLogin</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>adminLogin</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminLogin</servlet-name>
+    <url-pattern>/adminLogin</url-pattern>
+  </servlet-mapping>
+  <!-- 管理员注销 -->
+   <servlet>
+    <servlet-name>AdminLogout</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>adminLogout</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminLogout</servlet-name>
+    <url-pattern>/adminLogout</url-pattern>
+  </servlet-mapping>
+  
+  
+  <!-- 添加一级分类 -->
+   <servlet>
+    <servlet-name>AddType1</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addType1</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddType1</servlet-name>
+    <url-pattern>/addType1</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 查询一级分类 -->
+     <servlet>
+    <servlet-name>GetType</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getType</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetType</servlet-name>
+    <url-pattern>/getType</url-pattern>
+  </servlet-mapping>
+  <!-- 添加二级分类 -->
+  <servlet>
+    <servlet-name>AddType2</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addType2</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddType2</servlet-name>
+    <url-pattern>/addType2</url-pattern>
+  </servlet-mapping>
+  <!-- 添加商品 -->
+  <servlet>
+    <servlet-name>AddGoods</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addGoods</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddGoods</servlet-name>
+    <url-pattern>/addGoods</url-pattern>
+  </servlet-mapping>
+  <!-- 编辑商品 -->
+  <servlet>
+    <servlet-name>EditGoods</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>editGoods</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditGoods</servlet-name>
+    <url-pattern>/editGoods</url-pattern>
+  </servlet-mapping>
+  <!-- 编辑分类 -->
+    <servlet>
+    <servlet-name>EditType</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>editType</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditType</servlet-name>
+    <url-pattern>/editType</url-pattern>
+  </servlet-mapping>
+  <!-- 删除分类 -->
+   <servlet>
+    <servlet-name>DelType</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delType</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DelType</servlet-name>
+    <url-pattern>/delType</url-pattern>
+  </servlet-mapping>
+  <!-- 商品列表 -->
+  <servlet>
+  	<servlet-name>GetProducts</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getProducts</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetProducts</servlet-name>
+  	<url-pattern>/getProducts</url-pattern>
+  </servlet-mapping>
+  <!-- 删除商品 -->
+  <servlet>
+  	<servlet-name>DelProduct</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delProduct</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelProduct</servlet-name>
+  	<url-pattern>/delProduct</url-pattern>
+  </servlet-mapping>
+  <!-- 小区管理 -->
+  <!-- 添加区域 -->
+  <servlet>
+  	<servlet-name>AddArea</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addArea</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>AddArea</servlet-name>
+  	<url-pattern>/addArea</url-pattern>
+  </servlet-mapping>
+  <!-- 获取地区 -->
+    <servlet>
+  	<servlet-name>GetArea</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getArea</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetArea</servlet-name>
+  	<url-pattern>/getArea</url-pattern>
+  </servlet-mapping>
+  <!-- 添加小区 -->
+   <servlet>
+  	<servlet-name>AddCommunity</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addCommunity</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>AddCommunity</servlet-name>
+  	<url-pattern>/addCommunity</url-pattern>
+  </servlet-mapping>
+  <!-- 小区列表 -->
+  <servlet>
+  	<servlet-name>GetCommunity</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getCommunity</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetCommunity</servlet-name>
+  	<url-pattern>/getCommunity</url-pattern>
+  </servlet-mapping>
+  <!-- 编辑小区 -->
+  <servlet>
+  	<servlet-name>EditCommunity</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>editCommunity</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>EditCommunity</servlet-name>
+  	<url-pattern>/editCommunity</url-pattern>
+  </servlet-mapping>
+  <!-- 删除小区 -->
+   <servlet>
+  	<servlet-name>DelCommunity</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delCommunity</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelCommunity</servlet-name>
+  	<url-pattern>/delCommunity</url-pattern>
+  </servlet-mapping>
+  <!-- 搜索小区 -->
+   <servlet>
+  	<servlet-name>SearchCommunity</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>searchCommunity</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>SearchCommunity</servlet-name>
+  	<url-pattern>/searchCommunity</url-pattern>
+  </servlet-mapping>
+  <!-- 编辑区域 -->
+   <servlet>
+  	<servlet-name>EditArea</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>editArea</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>EditArea</servlet-name>
+  	<url-pattern>/editArea</url-pattern>
+  </servlet-mapping>
+  <!-- 删除区域 -->
+  <servlet>
+  	<servlet-name>DelArea</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delArea</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelArea</servlet-name>
+  	<url-pattern>/delArea</url-pattern>
+  </servlet-mapping>
+  <!-- 添加商家 -->
+  <servlet>
+  	<servlet-name>AddShops</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>addShops</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>AddShops</servlet-name>
+  	<url-pattern>/addShops</url-pattern>
+  </servlet-mapping>
+  <!-- 商家列表 -->
+  <servlet>
+  	<servlet-name>GetShops</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getShops</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetShops</servlet-name>
+  	<url-pattern>/getShops</url-pattern>
+  </servlet-mapping>
+  <!-- 编辑商家 -->
+   <servlet>
+  	<servlet-name>EditShops</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>editShops</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>EditShops</servlet-name>
+  	<url-pattern>/editShops</url-pattern>
+  </servlet-mapping>
+  <!-- 删除商家 -->
+   <servlet>
+  	<servlet-name>DelShops</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delShops</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelShops</servlet-name>
+  	<url-pattern>/delShops</url-pattern>
+  </servlet-mapping>
+  
+  <!-- 普通管理员 -->
+  <!-- 普通用户列表 -->
+  <servlet>
+  	<servlet-name>GetCommonUser</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getCommonUser</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetCommonUser</servlet-name>
+  	<url-pattern>/getCommonUser</url-pattern>
+  </servlet-mapping>
+  <!-- 删除普通用户 -->
+   <servlet>
+  	<servlet-name>DelCommonUser</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delCommonUser</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelCommonUser</servlet-name>
+  	<url-pattern>/delCommonUser</url-pattern>
+  </servlet-mapping>
+  <!-- 编辑用户信息 -->
+   <servlet>
+  	<servlet-name>UpdateCommonUser</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>updateCommonUser</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>UpdateCommonUser</servlet-name>
+  	<url-pattern>/updateCommonUser</url-pattern>
+  </servlet-mapping>
+  <!-- 配送员列表 -->
+  <servlet>
+  	<servlet-name>GetDeliveryUser</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getDeliveryUser</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetDeliveryUser</servlet-name>
+  	<url-pattern>/getDeliveryUser</url-pattern>
+  </servlet-mapping>
+  <!-- 删除配送员 -->
+   <servlet>
+  	<servlet-name>DelDeliveryUser</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delDeliveryUser</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelDeliveryUser</servlet-name>
+  	<url-pattern>/delDeliveryUser</url-pattern>
+  </servlet-mapping>
+  <!-- 编辑配送员 -->
+  <servlet>
+  	<servlet-name>UpdateDeliveryUser</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>updateDeliveryUser</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>UpdateDeliveryUser</servlet-name>
+  	<url-pattern>/updateDeliveryUser</url-pattern>
+  </servlet-mapping>
+  <!-- -订单管理 -->
+  <!-- 订单显示列表 -->
+   <servlet>
+  	<servlet-name>GetOrder</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetOrder</servlet-name>
+  	<url-pattern>/getOrder</url-pattern>
+  </servlet-mapping>
+  <!-- 删除近一个月订单 -->
+  <servlet>
+  	<servlet-name>DelOrder</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelOrder</servlet-name>
+  	<url-pattern>/delOrder</url-pattern>
+  </servlet-mapping>
+  <!-- 获取指定订单的详情 -->
+  <servlet>
+  	<servlet-name>GetOrderDetails</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getOrderDetails</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetOrderDetails</servlet-name>
+  	<url-pattern>/getOrderDetails</url-pattern>
+  </servlet-mapping>
+  <!-- 获取配送员信息 -->
+   <servlet>
+  	<servlet-name>GetDelivery</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getDelivery</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetDelivery</servlet-name>
+  	<url-pattern>/getDelivery</url-pattern>
+  </servlet-mapping>
+  <!-- 管理员列表 -->
+  <servlet>
+  	<servlet-name>GetAdmin</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getAdmin</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetAdmin</servlet-name>
+  	<url-pattern>/getAdmin</url-pattern>
+  </servlet-mapping>
+  <!-- 删除管理员 -->
+  <servlet>
+  	<servlet-name>DelAdmin</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>delAdmin</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DelAdmin</servlet-name>
+  	<url-pattern>/delAdmin</url-pattern>
+  </servlet-mapping>
+  <!-- 更新管理员信息 -->
+  <servlet>
+  	<servlet-name>UpdateAdminUser</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>updateAdminUser</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>UpdateAdminUser</servlet-name>
+  	<url-pattern>/updateAdminUser</url-pattern>
+  </servlet-mapping>
+  <!-- 订单统计 -->
+  <servlet>
+  	<servlet-name>GetOrderCount</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getOrderCount</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetOrderCount</servlet-name>
+  	<url-pattern>/getOrderCount</url-pattern>
+  </servlet-mapping>
+  <!-- 用户统计-->
+  <servlet>
+  	<servlet-name>GetUserCount</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getUserCount</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetUserCount</servlet-name>
+  	<url-pattern>/getUserCount</url-pattern>
+  </servlet-mapping>
+  <!-- 商品统计 -->
+   <servlet>
+  	<servlet-name>GetGoodsCount</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getGoodsCount</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetGoodsCount</servlet-name>
+  	<url-pattern>/getGoodsCount</url-pattern>
+  </servlet-mapping>
+  <!-- 导出商品信息 -->
+   <servlet>
+  	<servlet-name>DownLoadGoods</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>downLoadGoods</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DownLoadGoods</servlet-name>
+  	<url-pattern>/downLoadGoods</url-pattern>
+  </servlet-mapping>
+  <!-- 获取促销设置信息  -->
+  <servlet>
+  	<servlet-name>GetPromotionInfo</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getPromotionInfo</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>GetPromotionInfo</servlet-name>
+  	<url-pattern>/getPromotionInfo</url-pattern>
+  </servlet-mapping>
+  <!-- 删除促销列表中的促销商品 -->
+   <servlet>
+  	<servlet-name>DeletePromotion</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deletePromotion</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DeletePromotion</servlet-name>
+  	<url-pattern>/deletePromotion</url-pattern>
+  </servlet-mapping>
+   <!-- 促销设置 -->
+   <servlet>
+    <servlet-name>PromotionSetUp</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>promotionSetUp</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PromotionSetUp</servlet-name>
+    <url-pattern>/promotionSetUp</url-pattern>
+   </servlet-mapping>
+  <!-- 获取所有商品二级分类 -->
+   <servlet>
+    <servlet-name>GetPC</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getPC</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetPC</servlet-name>
+    <url-pattern>/getPC</url-pattern>
+   </servlet-mapping>
+  <!-- 查看反馈信息 -->
+  <servlet>
+    <servlet-name>GetComplain</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>getComplain</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetComplain</servlet-name>
+    <url-pattern>/getComplain</url-pattern>
+   </servlet-mapping>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- 配送端 -->
+  <servlet>
+  	<servlet-name>DeliveryUserRegistration</servlet-name>
+  	<servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deliveryUserRegistration</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>DeliveryUserRegistration</servlet-name>
+  	<url-pattern>/deliveryUserRegistration</url-pattern>
+  </servlet-mapping>
+  
+   <!-- 信息编写 -->
+  <servlet>
+    <servlet-name>CourierBasicInfo</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>courierBasicInfo</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CourierBasicInfo</servlet-name>
+    <url-pattern>/courierBasicInfo</url-pattern>
+  </servlet-mapping>
+  <!-- 上传证件 -->
+    <servlet>
+    <servlet-name>CourierUploadDoc</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>courierUploadDoc</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CourierUploadDoc</servlet-name>
+    <url-pattern>/courierUploadDoc</url-pattern>
+  </servlet-mapping>
+  <!-- 查询区域 -->
+   <servlet>
+    <servlet-name>DQueryArea</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>dqueryArea</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DQueryArea</servlet-name>
+    <url-pattern>/dqueryArea</url-pattern>
+  </servlet-mapping>
+<!-- 获取商家 -->
+  <servlet>
+    <servlet-name>QueryShops</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryShops</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryShops</servlet-name>
+    <url-pattern>/queryShops</url-pattern>
+  </servlet-mapping>
+  <!-- 登陆 -->
+  <servlet>
+    <servlet-name>DeliveryUserLogin</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deliveryUserLogin</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeliveryUserLogin</servlet-name>
+    <url-pattern>/deliveryUserLogin</url-pattern>
+  </servlet-mapping>
+  
+  
+   <!-- 查询订单列表 -->
+   <servlet>
+    <servlet-name>QueryBillList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryBillList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryBillList</servlet-name>
+    <url-pattern>/queryBillList</url-pattern>
+   </servlet-mapping>
+  <!-- 查询订单详情 -->
+  <servlet>
+    <servlet-name>QueryBillDec</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryBillDec</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryBillDec</servlet-name>
+    <url-pattern>/queryBillDec</url-pattern>
+   </servlet-mapping>
+  <!-- 查询接单列表 -->
+    <servlet>
+    <servlet-name>QueryReceBillList</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryReceBillList</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryReceBillList</servlet-name>
+    <url-pattern>/queryReceBillList</url-pattern>
+   </servlet-mapping>
+  <!-- 查询接单详情 -->
+   <servlet>
+    <servlet-name>QueryReceBillDec</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>queryReceBillDec</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>QueryReceBillDec</servlet-name>
+    <url-pattern>/queryReceBillDec</url-pattern>
+   </servlet-mapping>
+  <!-- 订单备货完成 -->
+     <servlet>
+    <servlet-name>CourierBillCompleted</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>courierBillCompleted</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CourierBillCompleted</servlet-name>
+    <url-pattern>/courierBillCompleted</url-pattern>
+   </servlet-mapping>
+  <!-- 取消备货 -->
+   <servlet>
+    <servlet-name>CourierCancelBill</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>courierCancelBill</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CourierCancelBill</servlet-name>
+    <url-pattern>/courierCancelBill</url-pattern>
+   </servlet-mapping>
+  <!-- 交易完成 -->
+     <servlet>
+    <servlet-name>CourierTradeCompleted</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>courierTradeCompleted</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CourierTradeCompleted</servlet-name>
+    <url-pattern>/courierTradeCompleted</url-pattern>
+   </servlet-mapping>
+  <!-- 交易失败 -->
+      <servlet>
+    <servlet-name>CourierTradeFailure</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>courierTradeFailure</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CourierTradeFailure</servlet-name>
+    <url-pattern>/courierTradeFailure</url-pattern>
+   </servlet-mapping>
+   
+   <!--  -->
+     <servlet>
+    <servlet-name>UnFinishedOrder</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>unFinishedOrder</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UnFinishedOrder</servlet-name>
+    <url-pattern>/unFinishedOrder</url-pattern>
+   </servlet-mapping>
+   <!-- 配送员当天接单的详情 -->
+     <servlet>
+    <servlet-name>TodayData</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>todayData</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TodayData</servlet-name>
+    <url-pattern>/todayData</url-pattern>
+   </servlet-mapping>
+   <!-- 配送员注销 -->
+    <servlet>
+    <servlet-name>Logout</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>logout</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Logout</servlet-name>
+    <url-pattern>/logout</url-pattern>
+   </servlet-mapping>
+   <!-- 配送员忘记密码 -->
+   <servlet>
+    <servlet-name>DeliveryForgotPsw</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deliveryForgotPsw</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeliveryForgotPsw</servlet-name>
+    <url-pattern>/deliveryForgotPsw</url-pattern>
+   </servlet-mapping>
+   <!-- 配送员修改密码 -->
+    <servlet>
+    <servlet-name>DeliveryUserChangePsw</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deliveryUserChangePsw</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeliveryUserChangePsw</servlet-name>
+    <url-pattern>/deliveryUserChangePsw</url-pattern>
+   </servlet-mapping>
+   <!-- 配送员修改手机号 -->
+     <servlet>
+    <servlet-name>DeliveryUpdatePhoneNumber</servlet-name>
+    <servlet-class>jk.o1office.servlet.ServletToBeanProxy</servlet-class>
+   		 <init-param>
+			<param-name>targetBean</param-name>
+			<param-value>deliveryUpdatePhoneNumber</param-value>
+		</init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeliveryUpdatePhoneNumber</servlet-name>
+    <url-pattern>/deliveryUpdatePhoneNumber</url-pattern>
+   </servlet-mapping>
+   
+   
+   
+</web-app>
+
+<!-- -Xms256m -Xmx512m -XX:MaxNewSize=256m -XX:MaxPermSize=256m -->

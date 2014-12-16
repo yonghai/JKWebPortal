@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.domin.DeliveryUser" dynamic-update="true" table="user_delivery">
+		<id name="id">
+			<generator class="native"></generator>
+		</id>
+		<property name="username"/>
+		<property name="password"/>
+		<property name="salt"/>
+		<property name="nickname"/>
+		<property name="status"/>
+		<property name="telphone"/>
+		<property name="shop_id"/>
+		<property name="idnumber"/>
+		<property name="imgpath"/>
+		<property name="createtime" column="create_time" type="timestamp"/>	
+    </class>
+	
+</hibernate-mapping>

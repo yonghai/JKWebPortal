@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.ht.domin.Shops" table="shops">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<property name="bossname"/>
+		<property name="bosstel"/>
+    	<property name="shopname" unique="true"/>
+    	<property name="shoptel"/>
+    	<property name="shopaddr"/>
+    	<property name="shopimg"/>
+		<property name="createtime" type="timestamp"/>
+		<property name="sheng"/>
+		<property name="shi"/>
+		<property name="area"/>
+    </class>
+	
+</hibernate-mapping>

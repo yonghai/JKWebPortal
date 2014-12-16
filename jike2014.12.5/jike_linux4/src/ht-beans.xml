@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<!-- 配置数据源  -->
+	<bean id="htDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${ht.jdbc.driverClass}"/>  
+    	<property name="jdbcUrl" value="${ht.jdbc.url}"/>  
+    	<property name="user" value="${ht.jdbc.username}"/>  
+  	    <property name="password" value="${ht.jdbc.password}"/>  
+  	    <property name="initialPoolSize" value="${ht.cpool.initialPoolSize}"></property>  
+   	 	<!--  property name="maxIdleTime" value="${ht.cpool.maxIdleTime}"></property-->  
+   		<property name="maxPoolSize" value="${ht.cpool.maxPoolSize}"></property>  
+     	<property name="minPoolSize" value="${ht.cpool.minPoolSize}"></property> 
+		<property name="checkoutTimeout" value="${ht.cpool.checkoutTimeout}"></property>
+	</bean>
+	<!-- hibernate SessionFactory -->
+	<bean id="htSessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="htDataSource"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">none</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</prop>
+				<prop key="current_session_context_class">thread</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>jk/o1office/ht/domin/ProductCategory.hbm.xml</value>
+				<value>jk/o1office/ht/domin/Product.hbm.xml</value>
+				<value>jk/o1office/ht/domin/Area.hbm.xml</value>
+				<value>jk/o1office/ht/domin/Community.hbm.xml</value>
+				<value>jk/o1office/ht/domin/Shops.hbm.xml</value>
+				<value>jk/o1office/ht/domin/AdminUser.hbm.xml</value>
+				<value>jk/o1office/ht/domin/CommonUser.hbm.xml</value>
+				<value>jk/o1office/ht/domin/DeliveryUser.hbm.xml</value>
+				<value>jk/o1office/ht/domin/Order.hbm.xml</value>
+				<value>jk/o1office/ht/domin/OrderDetails.hbm.xml</value>
+				<value>jk/o1office/ht/domin/LoginInfo.hbm.xml</value>
+				<value>jk/o1office/ht/domin/URLInfo.hbm.xml</value>
+				<value>jk/o1office/ht/domin/AdDetail.hbm.xml</value>
+				<value>jk/o1office/ht/domin/Advertise.hbm.xml</value>
+				<value>jk/o1office/ht/domin/Complain.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!-- hibernateTemplate -->
+	<bean id="htHibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="htSessionFactory"/>	
+	</bean>
+	
+	<!-- 处理文件上的类 -->
+	<!-- 一级分类图片上传 -->
+	<bean id="htFileUpload1" class="jk.o1office.ht.utils.FileUpload">
+		<constructor-arg value="one"/>
+		<constructor-arg value="/jike/type/one"/>
+	</bean>
+	<!-- 二级分类图片上传 -->
+	<bean id="htFileUpload2" class="jk.o1office.ht.utils.FileUpload">
+		<constructor-arg value="two"/>
+		<constructor-arg value="/jike/type/two"/>
+	</bean>
+	<!-- 商品图片上传 -->
+	<bean id="htFileUpload3" class="jk.o1office.ht.utils.FileUpload">
+		<constructor-arg value="product"/>
+		<constructor-arg value="/jike/product"/>
+	</bean>
+	<!-- 商家图片上传 -->
+	<bean id="htFileUpload4" class="jk.o1office.ht.utils.FileUpload">
+		<constructor-arg value="shops"/>
+		<constructor-arg value="/jike/shops"/>
+	</bean>
+	
+	<!-- 验证类 -->
+	<bean id="htValidator" class="jk.o1office.ht.validator.Validator">
+	</bean>
+	<!-- 管理员登陆 -->
+	<bean id="htUserDao" class="jk.o1office.ht.dao.impl.UserDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htUserService" class="jk.o1office.ht.service.impl.UserServiceImpl">
+		<property name="userDao" ref="htUserDao"/>
+		<property name="cUserService" ref="htCUserService"/>
+		<property name="dUserService" ref="htDUserService"/>
+	</bean>
+	<bean id="adminLogin" class="jk.o1office.ht.login.AdminLogin">
+		<property name="userService" ref="htUserService"/>
+	</bean>
+	<!-- 管理员注销 -->
+	<bean id="htLogDao" class="jk.o1office.ht.dao.impl.LogDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htLogService" class="jk.o1office.ht.service.impl.LogServiceImpl">
+		<property name="logDao" ref="htLogDao"/>
+	</bean>
+	<bean id="adminLogout" class="jk.o1office.ht.login.AdminLogout">
+		<property name="logService" ref="htLogService"/>
+	</bean>
+	<!-- 操作管理员 -->
+	<!-- 商品管理 -->
+	<bean id="htProductCategoryDao" class="jk.o1office.ht.dao.impl.ProductCategoryDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htProductCategoryService" class="jk.o1office.ht.service.impl.ProductCategoryServiceImpl">
+		<property name="productCategoryDao" ref="htProductCategoryDao"/>
+	</bean>
+	<!-- 添加一级分类 -->
+	<bean id="addType1" class="jk.o1office.ht.operate.servlet.AddType1">
+		<property name="fileUpload" ref="htFileUpload1"/>
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 添加二级分类 -->
+	<bean id="addType2" class="jk.o1office.ht.operate.servlet.AddType2">
+		<property name="fileUpload" ref="htFileUpload2"/>
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 获取一级分类 -->
+	<bean id="getType" class="jk.o1office.ht.operate.servlet.GetType">
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 添加商品 -->
+	<bean id="htProductDao" class="jk.o1office.ht.dao.impl.ProductDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htProductService" class="jk.o1office.ht.service.impl.ProductServiceImpl">
+		<property name="productDao" ref="htProductDao"/>
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+	</bean>
+	<bean id="addGoods" class="jk.o1office.ht.operate.servlet.AddGoods">
+		<property name="fileUpload" ref="htFileUpload3"/>
+		<property name="productService" ref="htProductService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 编辑商品 -->
+	<bean id="editGoods" class="jk.o1office.ht.operate.servlet.EditGoods">
+		<property name="productService" ref="htProductService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 编辑分类 -->
+	<bean id="editType" class="jk.o1office.ht.operate.servlet.EditType">
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 商品列表 -->
+	<bean id="getProducts" class="jk.o1office.ht.operate.servlet.GetProducts">
+		<property name="productService" ref="htProductService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除商品 -->
+	<bean id="delProduct" class="jk.o1office.ht.operate.servlet.DelProduct">
+		<property name="productService" ref="htProductService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除分类 -->
+	<bean id="delType" class="jk.o1office.ht.operate.servlet.DelType">
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 小区管理 -->
+	<!-- 添加区域 -->
+	<bean id="htAreaDao" class="jk.o1office.ht.dao.impl.AreaDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htAreaService" class="jk.o1office.ht.service.impl.AreaServiceImpl">
+		<property name="areaDao" ref="htAreaDao"/>
+	</bean>
+	<bean id="addArea" class="jk.o1office.ht.operate.servlet.AddArea">
+		<property name="areaService" ref="htAreaService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 获取小区列表 -->
+	<bean id="getArea" class="jk.o1office.ht.operate.servlet.GetArea">
+		<property name="areaService" ref="htAreaService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除区域 -->
+	<bean id="delArea" class="jk.o1office.ht.operate.servlet.DelArea">
+		<property name="areaService" ref="htAreaService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 添加小区 -->
+	<bean id="htCommunityDao" class="jk.o1office.ht.dao.impl.CommunityDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htCommunityService" class="jk.o1office.ht.service.impl.CommunityService">
+		<property name="communityDao" ref="htCommunityDao"/>
+	</bean>
+	<bean id="addCommunity" class="jk.o1office.ht.operate.servlet.AddCommunity">
+		<property name="communityService" ref="htCommunityService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 小区列表 -->
+	<bean id="getCommunity" class="jk.o1office.ht.operate.servlet.GetCommunity">
+		<property name="communityService" ref="htCommunityService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 编辑小区 -->
+	<bean id="editCommunity" class="jk.o1office.ht.operate.servlet.EditCommunity">
+		<property name="communityService" ref="htCommunityService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除小区 -->
+	<bean id="delCommunity" class="jk.o1office.ht.operate.servlet.DelCommunity">
+		<property name="communityService" ref="htCommunityService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 查找小区 -->
+	<bean id="searchCommunity" class="jk.o1office.ht.operate.servlet.SearchCommunity">
+		<property name="communityService" ref="htCommunityService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 区域编辑 -->
+	<bean id="editArea" class="jk.o1office.ht.operate.servlet.EditArea">
+		<property name="areaService" ref="htAreaService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 添加商家 -->
+	<bean id="htShopsDao" class="jk.o1office.ht.dao.impl.ShopsDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htShopsService" class="jk.o1office.ht.service.impl.ShopsServiceImpl">
+		<property name="shopsDao" ref="htShopsDao"/>
+	</bean>
+	<!-- 添加商家 -->
+	<bean id="addShops" class="jk.o1office.ht.operate.servlet.AddShops">
+		<property name="fileUpload" ref="htFileUpload4"/>
+		<property name="shopsService" ref="htShopsService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 商家列表 -->
+	<bean id="getShops" class="jk.o1office.ht.operate.servlet.GetShops">
+		<property name="shopsService" ref="htShopsService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 编辑商家 -->
+	<bean id="editShops" class="jk.o1office.ht.operate.servlet.EditShops">
+		<property name="fileUpload" ref="htFileUpload4"/>
+		<property name="shopsService" ref="htShopsService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除商家 -->
+	<bean id="delShops" class="jk.o1office.ht.operate.servlet.DelShops">
+		<property name="shopsService" ref="htShopsService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	
+	
+	<!-- 普通管理员 -->
+	<!-- 用户管理 -->
+	<bean id="htCUserDao" class="jk.o1office.ht.dao.impl.CUserDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htCUserService" class="jk.o1office.ht.service.impl.CUserServiceImpl">
+		<property name="userDao" ref="htCUserDao"/>
+	</bean>
+	<!--普通用户列表 -->
+	<bean id="getCommonUser" class="jk.o1office.ht.common.servlet.GetCommonUser">
+		<property name="userService" ref="htCUserService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除普通用户 -->
+	<bean id="delCommonUser" class="jk.o1office.ht.common.servlet.DelCommonUser">
+		<property name="userService" ref="htCUserService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 编辑用户信息 -->
+	<bean id="updateCommonUser" class="jk.o1office.ht.common.servlet.UpdateCommonUser">
+		<property name="userService" ref="htCUserService"/>
+	</bean>
+	<!-- 配送员 -->
+	<bean id="htDUserDao" class="jk.o1office.ht.dao.impl.DUserDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htDUserService" class="jk.o1office.ht.service.impl.DUserServiceImpl">
+		<property name="userDao" ref="htDUserDao"/>
+	</bean>
+	<!-- 获取配送员列表 -->
+	<bean id="getDeliveryUser" class="jk.o1office.ht.common.servlet.GetDeliveryUser">
+		<property name="userService" ref="htDUserService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除配送员 -->
+	<bean id="delDeliveryUser" class="jk.o1office.ht.common.servlet.DelDeliveryUser">
+		<property name="userService" ref="htDUserService"/>
+	</bean>
+	<!-- 编辑配送员 -->
+	<bean id="updateDeliveryUser" class="jk.o1office.ht.common.servlet.UpdateDeliveryUser">
+		<property name="userService" ref="htDUserService"/>
+	</bean>
+	<!-- 订单管理 -->
+	<bean id="htOrderDao" class="jk.o1office.ht.dao.impl.OrderDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htOrderService" class="jk.o1office.ht.service.impl.OrderServiceImpl">
+		<property name="orderDao" ref="htOrderDao"/>
+	</bean>
+	<!-- 显示订单列表 -->
+	<bean id="getOrder" class="jk.o1office.ht.common.servlet.GetOrder">
+		<property name="orderService" ref="htOrderService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>	
+	<!-- 删除近一个月中订单 -->
+	<bean id="delOrder" class="jk.o1office.ht.common.servlet.DelOrder">
+		<property name="orderService" ref="htOrderService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 获取订单详情 -->
+	<bean id="getOrderDetails" class="jk.o1office.ht.common.servlet.GetOrderDetails">
+		<property name="orederService" ref="htOrderService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 获取配送员信息 -->
+	<bean id="getDelivery" class="jk.o1office.ht.common.servlet.GetDelivery">
+		<property name="userService" ref="htDUserService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 管理员列表 -->
+	<bean id="getAdmin" class="jk.o1office.ht.common.servlet.GetAdmin">
+		<property name="userService" ref="htUserService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 删除管理员 -->
+	<bean id="delAdmin" class="jk.o1office.ht.common.servlet.DelAdmin">
+		<property name="userService" ref="htUserService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>	
+	<!-- 更新管理员信息 -->
+	<bean id="updateAdminUser" class="jk.o1office.ht.common.servlet.UpdateAdminUser">
+		<property name="userService" ref="htUserService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 订单统计 -->
+	<bean id="getOrderCount" class="jk.o1office.ht.supe.servlet.getOrderCount">
+		<property name="orderService" ref="htOrderService"/>
+		<property name="validator" ref="htValidator"/>
+	</bean>
+	<!-- 用户统计 -->
+	<bean id="getUserCount" class="jk.o1office.ht.supe.servlet.GetUserCount">
+		<property name="userService" ref="htUserService"/>
+	</bean>
+	<!-- 商品统计 -->
+	<bean id="getGoodsCount" class="jk.o1office.ht.supe.servlet.GetGoodsCount">
+		<property name="productService" ref="htProductService"/>
+	</bean>
+	<!-- 导出商品数据 -->
+	<bean id="dataToExcel" class="jk.o1office.ht.utils.DataToExcel">
+	</bean>
+	<bean id="downLoadGoods" class="jk.o1office.ht.operate.servlet.DownLoadGoods">
+		<property name="dataToExcel" ref="dataToExcel"/>	
+	</bean>
+	<!-- 获取促销设置 -->
+	<bean id="htAdvertiseDao" class="jk.o1office.ht.dao.impl.AdvertiseDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htAdvertiseService" class="jk.o1office.ht.service.impl.AdvertiseServiceImpl">
+		<property name="advertiseDao" ref="htAdvertiseDao"/>
+		<property name="productService" ref="htProductService"/>
+	</bean>
+	<bean id="getPromotionInfo" class="jk.o1office.ht.operate.servlet.GetPromotionInfo">
+		<property name="advertiseService" ref="htAdvertiseService"/>
+	</bean>
+	<!-- 促销设置 -->
+	<bean id="promotionSetUp" class="jk.o1office.ht.operate.servlet.PromotionSetUp">
+		<property name="validator" ref="htValidator"/>
+		<property name="advertiseService" ref="htAdvertiseService"/>
+	</bean>
+	<!-- 删除促销列表中促销商品 -->
+	<bean id="deletePromotion" class="jk.o1office.ht.operate.servlet.DeletePromotion">
+		<property name="validator" ref="htValidator"/>
+		<property name="advertiseService" ref="htAdvertiseService"/>
+	</bean>
+	<!-- 获取所有的二级分类 -->
+	<bean id="getPC" class="jk.o1office.ht.operate.servlet.GetPC">
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+	</bean>
+	<!-- 查看反馈信息 -->
+	<bean id="htComplainDao" class="jk.o1office.ht.dao.impl.ComplainDaoImpl">
+		<property name="hibernateTemplate" ref="htHibernateTemplate"/>
+	</bean>
+	<bean id="htComplainService" class="jk.o1office.ht.service.impl.ComplainServiceImpl">
+		<property name="complainDao" ref="htComplainDao"/>
+	</bean>
+	<bean id="getComplain" class="jk.o1office.ht.supe.servlet.GetComplain">
+		<property name="complainService" ref="htComplainService"/>
+	</bean>
+	<!-- 配置事务 -->
+	<bean id="htTxManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="htSessionFactory"/>
+	</bean>
+	<tx:advice id="htTxAdvice" transaction-manager="htTxManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut expression="execution(* jk.o1office.ht.service..*.*(..))" id="htService"/>
+		<aop:advisor advice-ref="htTxAdvice" pointcut-ref="htService"/>
+	</aop:config>
+	
+	<!--  
+	<bean id="a" class="test.A"></bean>
+	<aop:config>
+		<aop:aspect id="myaspect" ref="a">
+			<aop:pointcut expression="execution(* jk.o1office.ht.service..*.*(..))" id="htService1"/>
+			<aop:before method="before" pointcut-ref="htService1"/>
+			<aop:after method="after" pointcut-ref="htService1"/>
+		</aop:aspect>
+	</aop:config>
+	-->
+	<!-- 定时任务 -->
+	<bean id="clearImgCache" class="jk.o1office.ht.timer.ClearImgCache">
+		<property name="shopsService" ref="htShopsService"/>
+		<property name="productService" ref="htProductService"/>
+		<property name="productCategoryService" ref="htProductCategoryService"/>
+	</bean>
+	<bean id="htjobDetailBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="clearImgCache"/>
+		<property name="targetMethod" value="clear"/>
+		<property name="concurrent" value="false"/>
+	</bean>
+	<bean id="htcronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="htjobDetailBean"/>
+		<property name="cronExpression">
+			<value>0 0 1 ? * L</value> <!--每周星期天凌晨1点实行一次 -->
+		</property>
+	</bean> 
+	 
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="htcronTriggerBean"/>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

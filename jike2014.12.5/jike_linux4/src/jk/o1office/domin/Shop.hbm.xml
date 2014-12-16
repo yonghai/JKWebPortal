@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.domin.Shop" table="shop">
+		<id name="id">
+			<generator class="assigned"/>
+		</id>
+		<property name="createtime" type="timestamp"/>
+		<property name="business_hours"/>
+		<property name="business_status"/>
+		<property name="delivery_capacity"/>
+		<property name="description"/>
+		<property name="latitude"/>
+		<property name="longitude"/>
+		<property name="product_name"/>
+		<property name="areaid" />
+    </class>
+	
+</hibernate-mapping>

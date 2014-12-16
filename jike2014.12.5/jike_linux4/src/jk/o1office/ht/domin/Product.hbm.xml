@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.ht.domin.Product" table="product" dynamic-update="true">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<property name="barcode" column="bar_code"/>
+		<property name="createtime" column="create_time" type="timestamp"/>
+		<property name="pbrand" column="product_brand"/>
+		<property name="pcategoryid" column="product_category"/>
+		<property name="pdescript" column="product_description"/>
+		<property name="pimgpath" column="product_img"/>
+		<property name="pname" column="product_name"/>
+		<property name="pprice" column="product_price"/>
+		<property name="pversion" column="product_version"/>
+    	<property name="pweight"/>
+    	<property name="pbzq"/>
+    	<property name="pvalume"/>
+    	<property name="feature"></property>
+    	<property name="ispromotion"/>
+    	<property name="promotionprice"/>
+    </class>
+	
+</hibernate-mapping>

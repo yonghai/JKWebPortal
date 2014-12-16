@@ -1,0 +1,44 @@
+#win,#adminwin,#commonuserwin,#deliverywin{
+	font-size:20px;
+	font-family:Tahoma,Verdana,Î¢ÈíÑÅºÚ,ĞÂËÎÌå;
+}
+#win input{
+	margin-top: 30px;
+	margin-left: 15	px;
+	border: none;
+}
+#adminwin input,#commonuserwin input,#deliverywin input{
+	margin-top: 25px;
+	margin-left: 15px;
+}
+#win div,#adminwin div,#commonuserwin div,#deliverywin div{
+	padding-left: 30px;
+	font-size:20px;
+}
+
+#typewin{
+	font-size:20px;
+	font-family:Tahoma,Verdana,Î¢ÈíÑÅºÚ,ĞÂËÎÌå;
+}
+
+#typewin div{
+	padding-left: 30px;
+	font-size:20px;
+}
+
+#typewin input{
+	margin-top: 30px;
+	margin-left: 15	px;
+	padding-left: 20px;
+}
+
+#type{
+	font-size: 16px;
+}
+
+#pdiv{
+	width:400px;
+	margin-top: 40px;
+	background-color: gray;
+}
+

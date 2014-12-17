@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.example.org/admin" 
+	xmlns:tns="http://www.example.org/admin">
+	<element name="loginInfo">
+		<complexType>
+			<sequence>
+				<element name="loginTime" type="string"/>
+				<element name="logoutTime" type="string"/>
+				<element name="urls">
+					<complexType>
+						<sequence>
+							<element name="time"/>
+							<element name="content"/>
+						</sequence>
+					</complexType>
+				</element>
+				<element name="loginIP"/>
+			</sequence>
+		</complexType>
+	</element>	
+</schema>

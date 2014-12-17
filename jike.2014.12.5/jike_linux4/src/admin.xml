@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<loginInfo 
+	tns:xmlns="http://www.example.org/admin"
+	xsi:schemaLocation="http://www.example.org/admin">
+	<loginIP></loginIP>
+	<loginTime></loginTime>
+	<logoutTime></logoutTime>
+	<urls>
+		<content></content>
+		<time></time>
+	</urls>
+</loginInfo>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.ht.domin.OrderDetails" table="bill_items">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<property name="orderid"/>
+		<property name="pid" column="product_id"/>
+		<property name="pnum" column="product_number"/>
+		<property name="pprice" column="product_price"/>
+    </class>
+	
+</hibernate-mapping>

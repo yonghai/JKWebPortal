@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.domin.HOrder" table="bill_history">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<!--<property name="actual_delivery_time" type="timestamp"/>-->
+		<property name="orderid" unique="true"/>
+		<!--  property name="actual_pay_type"/-->
+		<property name="bill_status"/>
+		<property name="createtime" type="timestamp"/>	
+		<property name="customer_id"/>
+		<property name="delivery_address_id"/>
+		<!--  property name="delivery_address_stamp"/-->
+		<!-- property name="delivery_id"/-->	
+		<!-- property name="lastupdatetime"/-->
+		<!--  property name="pay_status"/-->
+		<property name="pay_type"/>
+		<property name="tel"/>
+		<property name="name"/>
+		<property name="address"/>
+		<!--  property name="reserved_delivery_time"/-->
+		<property name="total_price"/>
+		<property name="isview"/>
+		<property name="checkcode"/>
+		<property name="goodsnum"/>
+		<property name="deliveryprice"/>
+    </class>
+	
+</hibernate-mapping>

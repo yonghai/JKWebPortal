@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.domin.OrderDetail" table="bill_items">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<property name="orderid" column="orderid" unique="true"/>
+		<property name="product_id" column="product_id"/>
+		<property name="product_number"/>
+		<property name="createtime" type="timestamp"/>	
+		<property name="product_price"/>
+		<property name="product_stamp" column="product_stamp"/>
+    </class>
+	
+</hibernate-mapping>

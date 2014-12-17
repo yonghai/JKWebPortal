@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.domin.VersionInfo" table="versions">
+		<id name="id">
+			<generator class="native"></generator>
+		</id>
+		<property name="category_ver"/>
+		<property name="area_ver"/>
+		<property name="soft_ver"/>
+		<property name="lowprice"/>
+		<property name="starttime" type="time"/>
+		<property name="endtime" type="time"/>
+		<property name="deliveryprice"/>
+		<property name="deliveryrange"/>
+		<property name="changetime" type="timestamp"/>	
+		<property name="role"/>
+		<property name="deliverytimer"/>
+    </class>
+	
+</hibernate-mapping>

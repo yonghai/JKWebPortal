@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:jdbc.properties"/>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+	</bean>
+	<!-- 配置数据源 -->	
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<!--
+		<property name="driverClass" value="com.mysql.jdbc.Driver"/>  
+    	<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/jike"/>  
+    	<property name="user" value="root"/>  
+  	    <property name="password" value="root"/>  
+  	     Connection Pooling Info 
+  	     <property name="initialPoolSize" value="5"></property>  
+   	 	 <property name="maxIdleTime" value="100"></property>  
+   		 <property name="maxPoolSize" value="50"></property>  
+     	 <property name="minPoolSize" value="5"></property>
+     	 -->
+     	 <property name="driverClass" value="${jdbc.driverClass}"/>  
+    	 <property name="jdbcUrl" value="${jdbc.url}"/>  
+    	 <property name="user" value="${jdbc.username}"/>  
+  	     <property name="password" value="${jdbc.password}"/>  
+  	     <!-- Connection Pooling Info -->
+  	     <property name="initialPoolSize" value="${cpool.initialPoolSize}"></property>  
+   	 	 <property name="maxIdleTime" value="${cpool.maxIdleTime}"></property>  
+   		 <property name="maxPoolSize" value="${cpool.maxPoolSize}"></property>  
+     	 <property name="minPoolSize" value="${cpool.minPoolSize}"></property> 
+	</bean>
+	<!-- 配置sessionFactory -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">none</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">false</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="current_session_context_class">thread</prop>
+				<prop key="hibernate.connection.autocommit">false</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>jk/o1office/domin/DeviceInfo.hbm.xml</value>
+				<value>jk/o1office/domin/CustomerUser.hbm.xml</value>
+				<value>jk/o1office/domin/DeliveryUser.hbm.xml</value>
+				<value>jk/o1office/domin/VersionInfo.hbm.xml</value>
+				<value>jk/o1office/domin/Device.hbm.xml</value>
+				<value>jk/o1office/domin/CustomerAddress.hbm.xml</value>
+				<value>jk/o1office/domin/GoodsCategory.hbm.xml</value>
+				<value>jk/o1office/domin/Product.hbm.xml</value>
+				<value>jk/o1office/domin/Order.hbm.xml</value>
+				<value>jk/o1office/domin/HOrder.hbm.xml</value>
+				<value>jk/o1office/domin/OrderDetail.hbm.xml</value>
+				<!-- 
+				<value>jk/o1office/domin/HOrderDetail.hbm.xml</value>
+				-->
+				<value>jk/o1office/domin/Complain.hbm.xml</value>
+				<value>jk/o1office/domin/Area.hbm.xml</value>
+				<value>jk/o1office/domin/Community.hbm.xml</value>
+				<value>jk/o1office/domin/ReceiveBill.hbm.xml</value>
+				<!-- 				
+				<value>jk/o1office/domin/ReceiveBillH.hbm.xml</value>
+				<value>jk/o1office/domin/ReceiveBillItemH.hbm.xml</value>
+				<value>jk/o1office/domin/ReceiveBillItem.hbm.xml</value>
+				-->
+				<value>jk/o1office/domin/Shop.hbm.xml</value>
+				<value>jk/o1office/domin/Shops.hbm.xml</value>
+				<value>jk/o1office/domin/CancelBill.hbm.xml</value>
+				<value>jk/o1office/domin/AdDetail.hbm.xml</value>
+				<value>jk/o1office/domin/Advertise.hbm.xml</value>
+				<value>jk/o1office/domin/Key.hbm.xml</value>
+				<value>jk/o1office/domin/ProductCount.hbm.xml</value>
+				<value>jk/o1office/domin/ProductRecord.hbm.xml</value>
+				
+				<value>jk/o1office/domin/Activity.hbm.xml</value>
+				<value>jk/o1office/domin/U_A.hbm.xml</value>
+				
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	
+	<!-- 配置hibernateTemplate -->
+	<bean id="hibernateTemple" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory"	ref="sessionFactory"/>
+	</bean>
+	<!-- 配置事务的传播属性 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- tx:method name="*" propagation="REQUIRED"/-->
+			<!-- AddressService -->
+			<tx:method name="getAddressList" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="save" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="updateAddress" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="deleteAddres" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="setDefaultAddress" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="getDefaultAddress" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="saveNewAddress" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="updateNewAddress" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="getMyAddressList" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+		
+			<!-- AreaService -->
+			<tx:method name="getAreaList" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getCommunity" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			
+			<!-- BillHandlerService -->
+			<tx:method name="billCompleted" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="cancelBill" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- ComplainService -->
+			<tx:method name="saveComplain" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- DeliveryUserService -->
+			<tx:method name="isHasUser" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getUser" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="isLogin" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="service" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="updateInfo" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- DeviceInfoService -->
+			<!-- DeviceService -->
+			<tx:method name="isOnline" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- GoodsCategoryService -->
+			<tx:method name="getGoodsCategories" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- OrderService -->
+			<tx:method name="saveOrders" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="getOrderByID" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getOrderDetails" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getOrderInfoByID" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="cancelOrder" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="deleteOrder" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="getHistoryOrder" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getOrder" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getOrderDetail" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			
+			<tx:method name="moveOrder" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			
+			<tx:method name="getOrderStatus" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getOrderUserTel" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="updateOrderStatus" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- OrdUserService -->
+			<tx:method name="updatePsw" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="logout" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="updatePhoneNum" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="updateNickName" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- ProductService -->
+			<tx:method name="queryProductsByType" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="searchProductByKeyWord" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="productRecord" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getProductByBarCode" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getProductByID" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="updateProductCount" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="updateProductRecord" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- ReceiveBillService -->
+			<tx:method name="getReceiceBill" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getReceBillDec" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- ShopService -->
+			<tx:method name="getShopListByArea" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- VersionService -->
+			<tx:method name="getVersionInfo" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- Advertisement -->
+			<tx:method name="getAdvers" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getAdvers1" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- KeyServiceImpl -->
+			<tx:method name="getKeyList" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="saveOrUpdate" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- 配送员 -->
+			<!-- DeliveryUserServiceImpl -->
+			<tx:method name="getShopsAddress" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- ReceiveBillService -->
+			<tx:method name="getReceiceBill" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="getReceBillDec" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<!-- BillHandlerService -->
+			<tx:method name="billCompleted" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="cancelBill" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			<tx:method name="billCompleted" propagation="REQUIRED" read-only="false" rollback-for="Exception"/>
+			
+			
+			<tx:method name="getUnFinshOrder" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<tx:method name="getToDayData" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			
+			<tx:method name="checkOrder" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+			<!-- ActivityService -->
+			<tx:method name="join" propagation="REQUIRED" read-only="true" rollback-for="Exception"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 事务管理 -->
+	<aop:config>
+		<aop:pointcut expression="execution(* jk.o1office.service.*.*(..))" id="service"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="service"/>
+	</aop:config>
+	
+	<!--
+	<bean id="aBean" class="test.Test"/>
+	<aop:config>
+  		<aop:aspect id="myAspect" ref="aBean">
+    		<aop:pointcut id="businessService" 
+        		expression="execution(* jk.o1office.service.*.moveOrder(..))"/>
+    		<aop:before pointcut-ref="businessService" method="testa"/>
+  		</aop:aspect>
+	</aop:config>
+	 -->
+	
+	<!-- 过滤器 -->
+	<bean id="deviceService" class="jk.o1office.service.impl.DeviceServiceImpl">
+		<property name="deviceDao" ref="deviceDao"/>
+	</bean>
+	<bean id="onlineFilter" class="jk.o1office.filter.OnlineFilter">
+		<property name="deviceService" ref="deviceService"/>
+	</bean>
+	<!-- 用户端初始化 -->
+	<bean id="initService" class="jk.o1office.service.impl.InitServiceImpl">
+		<property name="advertiseService" ref="advertiseService"/>
+		<property name="goodsCategoryService" ref="goodsCategoryService"/>
+		<property name="versionService" ref="versionService"/>
+	</bean>
+	<bean id="initialize" class="jk.o1office.registration.servlet.Initialize">
+		<property name="initService" ref="initService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 广告 -->
+	<bean id="advertiseDao" class="jk.o1office.dao.impl.AdvertiseDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="advertiseService" class="jk.o1office.service.impl.AdvertiseServiceImpl">
+		<property name="advertiseDao" ref="advertiseDao"/>
+	</bean>
+	<bean id="advertisement" class="jk.o1office.ad.servlet.Advertisement">
+		<property name="advertiseService" ref="advertiseService"/>
+	</bean>
+	<!-- 数据验证 -->
+	<bean id="validator" class="jk.o1office.validator.Validator"></bean>
+	<!-- 注册管理 -->
+	<bean id="deviceInfoDao" class="jk.o1office.dao.impl.DeviceInfoDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="deviceInfoService" class="jk.o1office.service.impl.DeviceInfoServiceImpl">
+		<property name="deviceInfoDao" ref="deviceInfoDao"/>
+	</bean>
+	<!-- 上传设备信息 -->
+	<bean id="submitDeviceInfo" class="jk.o1office.registration.servlet.SubmitDeviceInfo">
+		<property name="deviceInfoService" ref="deviceInfoService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 获取手机验证你码 -->
+	<bean id="cacheManager" class="net.sf.ehcache.CacheManager">
+	</bean>
+	<bean id="session" class="jk.o1office.utils.SessionCache">
+		<property name="cacheManager" ref="cacheManager"/>
+	</bean>
+	<bean id="message" class="jk.o1office.utils.SDKMessage">
+		<constructor-arg value="e0c62954158dcdafdb2f5c34a2ba47c1"/>
+		<constructor-arg value="627"/>
+	</bean>
+	<bean id="getVerificationCode" class="jk.o1office.registration.servlet.GetVerificationCode">
+		<property name="message" ref="message"/>
+		<property name="validator" ref="validator"/>
+		<property name="session" ref="session"/>
+		<property name="userDao" ref="userDao"/>
+		<property name="duserDao" ref="duserDao"/>
+	</bean>
+	<!-- device -->
+	<bean id="deviceDao" class="jk.o1office.dao.impl.DeviceDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<!-- 普通用户 -->
+	<bean id="userDao" class="jk.o1office.dao.impl.OrdUserDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="userService" class="jk.o1office.service.impl.OrdUserServiceImpl">
+		<property name="userDao" ref="userDao"/>
+		<property name="deviceDao" ref="deviceDao"/>
+	</bean>
+	<!-- 验证验证码 -->
+	<bean id="checkVerificationCode" class="jk.o1office.registration.servlet.CheckVerificationCode">
+		<property name="session" ref="session"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 注册 -->
+	<!-- 用户端 -->
+	<bean id="ordUserRegistration" class="jk.o1office.registration.servlet.OrdUserRegistration">
+		<property name="userService" ref="userService"/>
+		<property name="validator" ref="validator"/>
+		<property name="session" ref="session"/>
+	</bean>
+	
+	<!-- 初始化请求 -->
+	<bean id="versionDao" class="jk.o1office.dao.impl.VersionDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="versionService" class="jk.o1office.service.impl.VersionServiceImpl">
+		<property name="versionDao" ref="versionDao"/>
+	</bean>
+	<!-- 用户端 -->
+	<bean id="ordInitializationSoft" class="jk.o1office.registration.servlet.OrdInitializationSoft">
+		<property name="versionService" ref="versionService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 配送端 -->
+	<bean id="deliveryInitializationSoft" class="jk.o1office.registration.servlet.DeliveryInitializationSoft">
+		<property name="versionService" ref="versionService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 登陆管理 -->
+	<!-- 普通用户登陆 -->
+	<bean id="ordUserLogin" class="jk.o1office.login.servlet.OrdUserLogin">
+		<property name="userService" ref="userService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 用户注销 -->
+	<bean id="userLogout" class="jk.o1office.login.servlet.UserLogout">
+		<property name="userService" ref="userService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 资料管理 -->
+	<!-- 普通用户修改密码 -->
+	<bean id="ordUserChangePsw" class="jk.o1office.info.servlet.OrdUserChangePsw">
+		<property name="userService" ref="userService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 普通用户忘记密码 -->
+	<bean id="ordForgotPsw" class="jk.o1office.info.servlet.OrdForgotPsw">
+		<property name="userService" ref="userService"/>
+		<property name="validator" ref="validator"/>
+		<property name="session" ref="session"/>
+	</bean>
+	<!-- 修改手机号码 -->
+	<bean id="updatePhoneNumber" class="jk.o1office.info.servlet.UpdatePhoneNumber">
+		<property name="userService" ref="userService"/>
+		<property name="validator" ref="validator"/>
+		<property name="session" ref="session"/>
+	</bean>
+	<!-- 修改用户昵称 -->
+	<bean id="updateNickName" class="jk.o1office.info.servlet.UpdateNickName">
+		<property name="userService" ref="userService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	
+	<!-- 配送地址管理 -->
+	<bean id="addressDao" class="jk.o1office.dao.impl.AddressDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>	
+	<bean id="addressService" class="jk.o1office.service.impl.AddressServiceImpl">
+		<property name="addressDao" ref="addressDao"/>
+	</bean>
+	<!-- 查看收货地址列表 -->
+	<bean id="deliveryAddressList" class="jk.o1office.address.servlet.DeliveryAddressList">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 新增的查看地址列表 -->
+	<bean id="getAddressList" class="jk.o1office.address.servlet.GetAddressList">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 新增收货地址 -->
+	<bean id="addDeliveryAddress" class="jk.o1office.address.servlet.AddDeliveryAddress">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>	
+	
+	<bean id="addDAddress" class="jk.o1office.address.servlet.AddDAddress">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 修改收货地址 -->
+	<bean id="updateDeliveryAddress" class="jk.o1office.address.servlet.UpdateDeliveryAddress">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<bean id="updateDAddress" class="jk.o1office.address.servlet.UpdateDAddress">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 删除收货地址 -->
+	<bean id="deleteDeliveryAddress" class="jk.o1office.address.servlet.DeleteDeliveryAddress">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 设置默认收货地址 -->
+	<bean id="defaultDeliveryAddress" class="jk.o1office.address.servlet.DefaultDeliveryAddress">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<bean id="IOSDeliveryAddressList" class="jk.o1office.address.servlet.IOSDeliveryAddressList">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 查看默认地址 -->
+	<bean id="queryDefaultAddress" class="jk.o1office.address.servlet.QueryDefaultAddress">
+		<property name="addressService" ref="addressService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 商品管理 -->
+	<bean id="goodsCategoryDao" class="jk.o1office.dao.impl.GoodsCategoryDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="goodsCategoryService" class="jk.o1office.service.impl.GoodsCategoryServiceImpl">
+		<property name="goodsCategoryDao" ref="goodsCategoryDao"/>
+		<property name="versionDao" ref="versionDao"/>
+		<property name="shopsService" ref="shopsService"/>
+	</bean>
+	<bean id="productDao" class="jk.o1office.dao.impl.ProductDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="productService" class="jk.o1office.service.impl.ProductServiceImpl">
+		<property name="productDao" ref="productDao"/>
+		<property name="keyService" ref="keyService"/>
+		<property name="shopsService" ref="shopsService"/>
+	</bean>
+	<!-- 用户关键字处理 -->
+	<bean id="keyDao" class="jk.o1office.dao.impl.KeyDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="keyService" class="jk.o1office.service.impl.KeyServiceImpl">
+		<property name="keyDao" ref="keyDao"/>
+	</bean>
+	<bean id="getKeyList" class="jk.o1office.goods.servlet.GetKeyList">
+		<property name="keyService" ref="keyService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 下载商品分类列表 -->
+	<bean id="downloadCategories" class="jk.o1office.goods.servlet.DownloadCategories">
+		<property name="goodsCategoryService" ref="goodsCategoryService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 根据分类查询商品列表 -->
+	<bean id="queryProductList" class="jk.o1office.goods.servlet.QueryProductList">
+		<property name="productService" ref="productService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 搜索商品 -->
+	<bean id="searchProduct" class="jk.o1office.goods.servlet.SearchProduct">
+		<property name="productService" ref="productService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 搜索框显示商品列表（销量最高或购买记录） -->
+	<bean id="recommendList" class="jk.o1office.goods.servlet.RecommendList">
+		<property name="productService" ref="productService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 根据商品条形码查询商品信息 -->
+	<bean id="searchProductForBarcode" class="jk.o1office.goods.servlet.SearchProductForBarcode">
+		<property name="productService" ref="productService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 根据商品ID查询商品信息 -->
+	<bean id="getProductByID" class="jk.o1office.goods.servlet.GetProductByID">
+		<property name="productService" ref="productService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 用户地址 -->
+	<bean id="customerAddressDao" class="jk.o1office.dao.impl.CustomerAddressDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="customerAddressService" class="jk.o1office.service.impl.CustomerAddressServiceImpl">
+		<property name="customerAddressDao" ref="customerAddressDao"/>
+	</bean>
+	<!-- 订单管理 -->
+	<bean id="orderDao" class="jk.o1office.dao.impl.OrderDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	
+	<bean id="orderService" class="jk.o1office.service.impl.OrderServiceImpl">
+		<property name="orderDao" ref="orderDao"/>
+		<property name="productService" ref="productService"/>
+		<property name="versionService" ref="versionService"/>
+		<property name="userService" ref="duserService"/>
+		<property name="customerAddressService" ref="customerAddressService"/>
+		<property name="shopsService" ref="shopsService"/>
+		<property name="deviceService" ref="deviceService"/>
+		<property name="addressService" ref="addressService"/>
+	</bean>
+	<!-- 提交订单 -->
+	<bean id="submitOrder" class="jk.o1office.order.servlet.SubmitOrder">
+		<property name="orderService" ref="orderService"/>
+		<property name="validator" ref="validator"/>
+		<property name="orderFactoryBean" ref="orderFactoryBean"/>
+	</bean>
+	<!-- 查询历史订单 -->
+	<bean id="queryHistoryOrder" class="jk.o1office.order.servlet.QueryHistoryOrder">
+		<property name="orderService" ref="orderService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 根据订单id查询订单详情 -->
+	<bean id="queryOrderByID" class="jk.o1office.order.servlet.QueryOrderByID">
+		<property name="orderService" ref="orderService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 取消订单 -->
+	<bean id="cancelOrder" class="jk.o1office.order.servlet.CancelOrder">
+		<property name="orderService" ref="orderService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 删除订单 -->
+	<bean id="deleteOrder" class="jk.o1office.order.servlet.DeleteOrder">
+		<property name="orderService" ref="orderService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 投诉建议管理 -->
+	<bean id="complainDao" class="jk.o1office.dao.impl.ComplainDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="complainService" class="jk.o1office.service.impl.ComplainServiceImpl">
+		<property name="complainDao" ref="complainDao"/>
+	</bean>
+	<!-- 添加投诉建议 -->
+	<bean id="addAdviceInfo" class="jk.o1office.advice.servlet.AddAdviceInfo">
+		<property name="complainService" ref="complainService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 地区管理 -->
+	<bean id="areaDao" class="jk.o1office.dao.impl.AreaDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="areaService" class="jk.o1office.service.impl.AreaServiceImpl">
+		<property name="areaDao" ref="areaDao"/>
+		<property name="versionDao" ref="versionDao"/>
+	</bean>
+	<!-- 获取地区列表 -->
+	<bean id="queryArea" class="jk.o1office.area.servlet.QueryArea">
+		<property name="areaService" ref="areaService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 获取小区列表 -->
+	<bean id="queryCommunity" class="jk.o1office.area.servlet.QueryCommunity">
+		<property name="areaService" ref="areaService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	
+	<!-- 配送员接口 -->
+	
+	<!-- 查询订单列表 -->
+	<bean id="queryBillList" class="jk.o1office.delivery.servlet.QueryBillList">
+		<property name="orderService" ref="orderService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 查询订单详情 -->
+	<bean id="queryBillDec" class="jk.o1office.delivery.servlet.QueryBillDec">
+		<property name="orderService" ref="orderService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 查询接单列表 -->
+	<bean id="receiveBillDao" class="jk.o1office.dao.impl.ReceiveBillDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+		<property name="orderDao" ref="orderDao"/>
+	</bean>
+	<bean id="receiveBillService" class="jk.o1office.service.impl.ReceiveBillServiceImpl">
+		<property name="receiveBillDao" ref="receiveBillDao"/>
+	</bean>
+	<bean id="queryReceBillList" class="jk.o1office.delivery.servlet.QueryReceBillList">
+		<property name="receiveBillService" ref="receiveBillService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 查询接单详情 -->
+	<bean id="queryReceBillDec" class="jk.o1office.delivery.servlet.QueryReceBillDec">
+		<property name="validator" ref="validator"/>
+		<property name="receiveBillService" ref="receiveBillService"/>		
+	</bean>
+	<!-- 订单备货完成 -->
+	<bean id="billHandlerService" class="jk.o1office.service.impl.BillHandlerServiceImpl">
+		<property name="orderDao" ref="orderDao"/>
+		<property name="receiveBillDao" ref="receiveBillDao"/>
+		<property name="productService" ref="productService"/>
+		<property name="versionService" ref="versionService"/>
+		<property name="orderService" ref="orderService"/>
+	</bean>
+	<bean id="courierBillCompleted" class="jk.o1office.delivery.servlet.CourierBillCompleted">
+		<property name="validator" ref="validator"/>
+		<property name="billHandlerService" ref="billHandlerService"/>
+	</bean>
+	<!-- 取消备货 -->
+	<bean id="courierCancelBill" class="jk.o1office.delivery.servlet.CourierCancelBill">
+		<property name="billHandlerService" ref="billHandlerService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 获取商店列表 -->
+	<bean id="shopDao" class="jk.o1office.dao.impl.ShopDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="shopService" class="jk.o1office.service.impl.ShopServiceImpl">
+		<property name="shopDao" ref="shopDao"/>
+	</bean>
+	<bean id="queryShopList" class="jk.o1office.delivery.servlet.QueryShopList">
+		<property name="validator" ref="validator"/>
+		<property name="shopService" ref="shopService"/>
+	</bean>
+	
+	<!-- 订单号生成器 (每天凌晨24点触发)-->
+	<bean id="orderFactoryBean" class="jk.o1office.ddh.timer.OrderFactoryBean">
+	</bean>
+	
+	<!-- 定时器 -->
+	<!-- 定义要运行的类 -->
+	<bean id="sequenceResetJob" class="jk.o1office.ddh.timer.SequenceResetJob">
+		<property name="orderFactoryBean" ref="orderFactoryBean"/>
+	</bean>
+	<!-- 配饰要运行的方法 -->
+	<bean id="methodInvokingJobDetailFactoryBean" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 目标对象 -->
+		<property name="targetObject" ref="sequenceResetJob"/>
+		<!-- 是否同时发生 -->
+		<property name="concurrent" value="false"/>
+		<!-- 目标方法 -->
+		<property name="targetMethod" value="execute"/>
+	</bean>
+	<!-- 定时时间间隔 -->
+	<bean id="cronTriggerBean0" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="methodInvokingJobDetailFactoryBean"/>
+		<property name="cronExpression" value="59 59 23 * * ?"/>
+	</bean>
+	
+	<!-- 定时器：定时将一个月以后得订单村放入历史订单表 (每天每两个小时触发一次)-->
+	<bean id="orderHandler" class="jk.o1office.ddh.timer.OrderHandler">
+		<property name="orderService" ref="orderService"/>
+	</bean>
+	<bean id="methodInvokingJobDetailFactoryBean1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 目标对象 -->
+		<property name="targetObject" ref="orderHandler"/>
+		<!-- 是否同时发生 -->
+		<property name="concurrent" value="false"/>
+		<!-- 目标方法 -->
+		<property name="targetMethod" value="execute"/>
+	</bean>
+	  
+	<!-- 配置触发器 -->
+	<bean id="cronTriggerBean1" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="methodInvokingJobDetailFactoryBean1"/>
+		<property name="cronExpression" value="0 0 */2 * * ?"/><!-- 0 0 */2 * * ? -->
+	</bean>
+	
+	<bean id="orderCacheUtil" class="jk.o1office.cache.OrderCacheUtil">
+		<property name="orderService" ref="orderService"/>
+	</bean>
+	<!-- 定时器30秒钟定时检查未接订单的时间 -->
+	<bean id="orderListener" class="jk.o1office.cache.OrderListener">
+		<property name="orderCacheUtil" ref="orderCacheUtil"/>
+	</bean>
+	<bean id="methodInvokingJobDetailFactoryBean2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 目标对象 -->
+		<property name="targetObject" ref="orderListener"/>
+		<!-- 是否同时发生 -->
+		<property name="concurrent" value="false"/>
+		<!-- 目标方法 -->
+		<property name="targetMethod" value="warm"/>
+	</bean>
+	<!-- 配置触发器 -->
+	<bean id="cronTriggerBean2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="methodInvokingJobDetailFactoryBean2"/>
+		<property name="cronExpression" value="0 */1 * * * ?"/>
+	</bean>
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref local="cronTriggerBean0"/>
+				<ref local="cronTriggerBean1"/>
+				<ref local="cronTriggerBean2"/>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 配送端 -->
+	
+	<bean id="duserDao" class="jk.o1office.dao.impl.DeliveryUserDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="duserService" class="jk.o1office.service.impl.DeliveryUserServiceImpl">
+		<property name="userDao" ref="duserDao"/>
+		<property name="deviceDao" ref="deviceDao"/>
+		<property name="session" ref="session"/>
+	</bean>
+	<!-- 注册 -->
+	<!-- 第一步 -->
+	<bean id="deliveryUserRegistration" class="jk.o1office.registration.servlet.DeliveryUserRegistration">
+		<property name="session" ref="session"/>
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<bean id="txFileUpload" class="jk.o1office.utils.FileUpload">
+		<constructor-arg value="/jike/delivery/"/>
+		<constructor-arg value="tx.jpg"/>
+	</bean>
+	<!-- 第二步 -->
+	<bean id="courierBasicInfo" class="jk.o1office.delivery.servlet.CourierBasicInfo">
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+		<property name="fileUpload" ref="txFileUpload"/>
+	</bean>
+	<!-- 第三步 上传证件 -->
+	<bean id="fileUpload" class="jk.o1office.utils.FileUpload">
+		<constructor-arg value="/jike/delivery/"/>
+		<constructor-arg value="sfz.jpg"/>
+	</bean>
+	<bean id="courierUploadDoc" class="jk.o1office.delivery.servlet.CourierUploadDoc">
+		<property name="fileUpload" ref="fileUpload"/>
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 获取区域 -->
+	<bean id="dqueryArea" class="jk.o1office.delivery.servlet.QueryArea">
+		<property name="areaService" ref="areaService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 获取商家 -->
+	<bean id="shopsDao" class="jk.o1office.dao.impl.ShopsDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="shopsService" class="jk.o1office.service.impl.ShopsServiceImpl">
+		<property name="shopsDao" ref="shopsDao"/>
+	</bean>
+	<bean id="queryShops" class="jk.o1office.delivery.servlet.QueryShops">
+		<property name="shopsService" ref="shopsService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 登陆 -->
+	<bean id="deliveryUserLogin" class="jk.o1office.login.servlet.DeliveryUserLogin">
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 交易成功 -->
+	<bean id="courierTradeCompleted" class="jk.o1office.delivery.servlet.CourierTradeCompleted">
+		<property name="billHandlerService" ref="billHandlerService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 交易失败 -->
+	<bean id="courierTradeFailure" class="jk.o1office.delivery.servlet.CourierTradeFailure">
+		<property name="validator" ref="validator"/>
+		<property name="billHandlerService" ref="billHandlerService"/>
+	</bean>
+	<!--  -->
+	<bean id="unFinishedOrder" class="jk.o1office.delivery.servlet.UnFinishedOrder">
+		<property name="validator" ref="validator"/>
+		<property name="billHandlerService" ref="billHandlerService"/>
+	</bean>
+	<!-- 配送员方天接单详情 -->
+	<bean id="todayData" class="jk.o1office.delivery.servlet.TodayData">
+		<property name="validator" ref="validator"/>
+		<property name="billHandlerService" ref="billHandlerService"/>
+	</bean>
+	<!-- 配送员注销 -->
+	<bean id="logout" class="jk.o1office.delivery.servlet.Logout">
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 配送员忘记密码 -->
+	<bean id="deliveryForgotPsw" class="jk.o1office.delivery.servlet.DeliveryForgotPsw">
+		<property name="session" ref="session"/>
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 配送员修改密码 -->
+	<bean id="deliveryUserChangePsw" class="jk.o1office.delivery.servlet.DeliveryUserChangePsw">
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 配送员修改手机号码 -->
+	<bean id="deliveryUpdatePhoneNumber" class="jk.o1office.delivery.servlet.DeliveryUpdatePhoneNumber">
+		<property name="session" ref="session"/>
+		<property name="userService" ref="duserService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	<!-- 提交订单时检查价格 -->
+	<bean id="checkHOrder" class="jk.o1office.order.servlet.CheckHOrder">
+		<property name="validator" ref="validator"/>
+		<property name="productService" ref="productService"/>
+	</bean>
+	
+	<!-- 用户参与活动 -->
+	<bean id="activityDao" class="jk.o1office.dao.impl.ActivityDaoImpl">
+		<property name="hibernateTemplate" ref="hibernateTemple"/>
+	</bean>
+	<bean id="activityService" class="jk.o1office.service.impl.ActivityServiceImpl">
+		<property name="activityDao" ref="activityDao"/>
+	</bean>
+	<bean id="joinActivity" class="jk.o1office.ad.servlet.JoinActivity">
+		<property name="activityService" ref="activityService"/>
+		<property name="validator" ref="validator"/>
+	</bean>
+	
+	<!-- 后台配置 
+	<import resource="ht-beans.xml"/>
+	
+	-->
+
+</beans>

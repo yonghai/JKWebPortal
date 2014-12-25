@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema 
+	xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.example.org/excel2db" 
+	xmlns:tns="http://www.example.org/excel2db">
+	<element name="excel2db">
+		<complexType>
+			<sequence>
+				<element name="field" type="string"/>
+			</sequence>
+			<attribute name="name" type="string" use="required"/>
+		</complexType>
+	</element>
+</schema>

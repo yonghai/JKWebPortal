@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.domin.Key" table="searchkeys" dynamic-update="true">
+		<id name="id">
+			<generator class="native"/>
+		</id>
+		<property name="content" column="keyword"/>
+		<property name="count"/>
+		<property name="userid"/>
+    </class>
+	
+</hibernate-mapping>

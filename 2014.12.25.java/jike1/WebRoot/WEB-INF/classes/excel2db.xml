@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<excel2db>
+	<field name="field1">value1</field>
+	<field name="field2">value2</field>
+	<field name="field3">value3</field>
+	<field name="field4">value4</field>
+</excel2db>

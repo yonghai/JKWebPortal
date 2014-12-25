@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="jk.o1office.domin.Device" table="devices">
+		<id name="id" column="_id">
+			<generator class="native"></generator>
+		</id>
+		<property name="device_id"/>
+		<property name="device_mac"/>
+		<property name="device_model_id"/>
+		<property name="token" unique="true"/>	
+		<property name="userid" unique="true"/>
+		<property name="createTime" type="timestamp"/>
+		<property name="role"/>	
+    </class>
+	
+</hibernate-mapping>

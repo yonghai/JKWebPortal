@@ -40,7 +40,6 @@ public class QTOrder extends O{
 	}
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "  " + " "  + "  " +content+"  "+"  ";
 	}
 }

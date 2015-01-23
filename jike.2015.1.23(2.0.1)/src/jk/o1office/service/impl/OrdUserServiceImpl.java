@@ -250,11 +250,9 @@ public class OrdUserServiceImpl implements UserService {
 		return 0;
 	}
 	public String getUserTel(int userID) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	public Object getUser(int userID) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

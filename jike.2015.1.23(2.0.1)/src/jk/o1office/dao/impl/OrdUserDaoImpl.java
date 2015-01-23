@@ -149,7 +149,6 @@ public class OrdUserDaoImpl implements UserDao {
 		return flag;
 	}
 	public boolean updateInfo(Object o) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
@@ -183,7 +182,6 @@ public class OrdUserDaoImpl implements UserDao {
 		return null;
 	}
 	public String getShopsAddress(int deliveryid) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

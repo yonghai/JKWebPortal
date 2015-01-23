@@ -189,7 +189,10 @@ public class BillHandlerServiceImpl implements BillHandlerService {
 			// 更改订单总表中的订单状态
 			orderDao.setAllOrderStatus(orderid, 2);
 		
-			orderDao.addGoodsNumAndGoodsPrice(orderid,goodsnum,goodsprice);
+			System.out.println(goodsnum+"   "+goodsprice);
+			
+			if(goodsnum!=0 && !goodsprice.equals("0"))
+				orderDao.addGoodsNumAndGoodsPrice(orderid,goodsnum,goodsprice);
 			// 更新商品购买次数统计表的统计次数(有误)
 			productService.updateProductCount(orderid);
 			// 更新用户购买商品的记录表

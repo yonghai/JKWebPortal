@@ -23,7 +23,6 @@ public class Alias_bind_unbind {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
 		// 单个ClientId别名绑定
 		bindAlias();
 		// 根据别名查询ClientId

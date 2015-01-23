@@ -78,7 +78,6 @@ public class SendMail{
 			boolean isSuccess=m.sendEmail("811067920@qq.com", null, "this is a test", "test mail", "2642626143@qq.com");
 			System.out.println(isSuccess);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

@@ -59,7 +59,7 @@ public class Validator {
 			throw new NullException(name);
 		}
 		System.out.println(str);
-		return str.trim();
+		return str;
 	}
 	
 	/**

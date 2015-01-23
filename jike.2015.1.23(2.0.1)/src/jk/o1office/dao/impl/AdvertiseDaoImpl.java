@@ -147,6 +147,7 @@ public class AdvertiseDaoImpl implements AdvertiseDao{
 	public List<Advertise> getAllAdImg(int style) {
 		return hibernateTemplate.find("from Advertise a where a.isshow !=0 and a.style="+style);
 	}
+	
 	public List<Advertise> getAllAdImg() {
 		return hibernateTemplate.find("from Advertise a where a.style!=2");
 	}

@@ -103,7 +103,6 @@ public class EncryptBase64 {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
 		String data = "id-12Anow-324325435";
 		System.out.println(new BigInteger(encryptBASE64(data.getBytes()))
 				.toString(16));

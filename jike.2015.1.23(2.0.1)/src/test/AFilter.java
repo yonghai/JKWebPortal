@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 public class AFilter implements Filter {
 
 	public void destroy() {
-		// TODO Auto-generated method stub
 
 	}
 

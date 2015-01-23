@@ -137,7 +137,7 @@ public class SubmitQTOrder extends HttpServlet{
 				if(obj.getBoolean("success")){
 					logger.info("start  sendNotification");
 					//推送消息给配送端
-					orderService.sendNotification(Integer.parseInt(""+allOrderInfo.getAddressid()));
+				//	orderService.sendNotification(Integer.parseInt(""+allOrderInfo.getAddressid()));
 					//发送消息给赵兴
 					SDKMessage m = new SDKMessage("e0c62954158dcdafdb2f5c34a2ba47c1", 1060);
 					try {

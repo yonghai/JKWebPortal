@@ -1,0 +1,16 @@
+BEGIN
+	INSERT INTO allorder_history SELECT * FROM allorder WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) >= date(createtime);
+	INSERT INTO bill_history SELECT * FROM bill WHERE orderid IN (SELECT orderid FROM allorder WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) >= date(createtime));
+	INSERT INTO qtbill_history SELECT * FROM qtbill WHERE orderid IN (SELECT orderid FROM allorder WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) >= date(createtime));
+	DELETE FROM allorder WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) >= date(createtime);
+	DELETE FROM bill WHERE orderid IN (SELECT orderid FROM allorder WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) >= date(createtime));
+	DELETE FROM qtbill WHERE orderid IN (SELECT orderid FROM allorder WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) >= date(createtime));
+END
+
+
+insert into allorder(id,orderid,ordertype,customerid,deliveryid,addressid,bill_status,deliveryprice,isview,checkcode,total_price,goodsnum,address,tel,name,createtime)
+select id,orderid,0,customer_id,delivery_id,delivery_address_id,bill_status,deliveryprice,isview,checkcode,total_price,goodsnum,address,tel,name,createtime from bill; 
+
+
+insert into jike201.bill(id,orderid,product_id,product_number,product_price)
+select id,orderid,product_number,product_price from jike1.bill_items              
